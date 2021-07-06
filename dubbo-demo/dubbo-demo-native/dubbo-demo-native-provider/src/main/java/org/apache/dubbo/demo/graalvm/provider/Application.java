@@ -16,19 +16,25 @@
  */
 package org.apache.dubbo.demo.graalvm.provider;
 
-import org.apace.dubbo.graalvm.demo.DemoService;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.ServiceConfig;
 import org.apache.dubbo.config.bootstrap.DubboBootstrap;
+import org.apache.dubbo.rpc.model.ApplicationModel;
+
+import org.apace.dubbo.graalvm.demo.DemoService;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
+import static org.apache.dubbo.common.constants.CommonConstants.NATIVE;
+
 public class Application {
 
     public static void main(String[] args) throws Exception {
+        boolean v = ApplicationModel.getEnvironment().getConfiguration().getBoolean(NATIVE, false);
+        System.out.println("native:" + v);
         System.setProperty("dubbo.application.logger", "jdk");
         if (isClassic(args)) {
             startWithExport();
@@ -54,7 +60,6 @@ public class Application {
         applicationConfig.setCompiler("jdk");
         Map<String,String> m = new HashMap<>(1);
         m.put("proxy","jdk");
-        m.put("native","true");
         applicationConfig.setParameters(m);
 
         bootstrap.application(applicationConfig)
